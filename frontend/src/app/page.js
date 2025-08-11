@@ -1,103 +1,70 @@
+
+'use client';
+// Add "use client" if your file uses:
+// useState
+// useEffect
+// Event handlers (onClick, onChange, etc.)
+// Browser-only code (e.g. window, localStorage)
+
 import Image from "next/image";
+import Link from 'next/link';
+
+
+import {useState} from 'react';
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  const [show,setShow] = useState(false)
+
+  // min-h-screen - minimum height = 100% of the viewport height
+
+  return (
+    <div className="min-h-screen bg-blue-500 h-40">
+
+      <div id = "topMenus" className = "w-full h-[80px] bg-red-500 flex items-center">
+        {/* h-[100px] - static height */}
+
+        <img
+          src="/images/hospital-svgrepo-com.svg"
+          alt="Hospital Logo"
+          className="w-[50px] h-[50px] ml-4"
+          // ml-4 - marginleft
+        />
+
+
+        <div className="flex-1 flex justify-center space-x-8 text-white font-medium">
+          <a href="#" className="hover:underline">Reviews</a>
+          <a href="#" className="hover:underline">Solutions</a>
+          <a href="#" className="hover:underline">Resources</a>
+          <a href="#" className="hover:underline">Company</a>
+          <a href="#" className="hover:underline">Pricing</a>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+
+        {/* Place my-image.jpg in the public/ folder (not src/)
+        w-full → full width
+        h-auto → auto height based on image ratio */}
+
+        <div id="loginSignUpBtns" className="ml-auto flex space-x-4 mr-5">
+
+        {/* In Next.js App Router, every route must have a page.jsx 
+        or page.tsx file inside a folder */}
+
+          <Link href="/login">
+            <button 
+              className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition">
+              Login
+            </button>
+          </Link>
+
+          <Link href="/signup">
+          <button 
+        className="bg-white text-blue-600 px-4 py-2 rounded-md border border-white-500 hover:bg-black-100 transition">
+        Signup
+        </button>
+          </Link>
+
+        </div>
+      </div>
     </div>
   );
 }
