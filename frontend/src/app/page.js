@@ -8,6 +8,8 @@
 
 import Image from "next/image";
 import Link from 'next/link';
+import LeftTopSection from "./launchscreen/LeftTopSection";
+import RightTopSectionImage from "./launchscreen/RightTopSectionImage";
 
 
 import {useState} from 'react';
@@ -19,9 +21,9 @@ export default function Home() {
   // min-h-screen - minimum height = 100% of the viewport height
 
   return (
-    <div className="min-h-screen bg-blue-500 h-40">
+    <div className="min-h-screen bg-[#000000] h-40">
 
-      <div id = "topMenus" className = "w-full h-[80px] bg-red-500 flex items-center">
+      <div id = "topMenus" className = "w-full h-[80px] bg-[#000000] flex items-center">
         {/* h-[100px] - static height */}
 
         <img
@@ -57,14 +59,32 @@ export default function Home() {
           </Link>
 
           <Link href="/signup">
-          <button 
-        className="bg-white text-blue-600 px-4 py-2 rounded-md border border-white-500 hover:bg-black-100 transition">
-        Signup
-        </button>
+          <button className="bg-white text-blue-600 px-4 
+          py-2 rounded-md border border-white-500 hover:bg-black-100 transition">
+           Signup
+          </button>
           </Link>
 
         </div>
+
       </div>
-    </div>
+
+       <div className="h-[800px] bg-[#00ff00] flex flex-col md:flex-row">
+              
+              <div className="flex-1">
+                  <LeftTopSection />
+              </div>
+
+              <div className="flex-1">
+                  <RightTopSectionImage />
+              </div>
+
+        </div>
+
+        
+
+          
+      </div>
+
   );
 }
