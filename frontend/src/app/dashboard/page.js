@@ -1,82 +1,71 @@
+"use client";
 
-'use client';
-// Add "use client" if your file uses:
-// useState
-// useEffect
-// Event handlers (onClick, onChange, etc.)
-// Browser-only code (e.g. window, localStorage)
-
-import Image from "next/image";
-import Link from 'next/link';
+import { useState } from "react";
 import { FaHome, FaTasks, FaCalendarAlt, FaUsers, FaCog } from "react-icons/fa";
-
-
-import {useState} from 'react';
+import UserDropdown from "../components/userDropdown";
+import MultiDropdown from "../components/multiDropdown";
 
 const menuItems = [
-  { label: "Dashboard", icon: FaHome },
-  { label: "Tasks", icon: FaTasks },
+  {
+    label: "Tasks",
+    icon: FaTasks,
+    hasDropdown: true,
+    dropdownItems: [
+      { label: "Test 1" },
+      { label: "Test 2" },
+    ],
+  },
   { label: "Calendar", icon: FaCalendarAlt },
   { label: "Participants", icon: FaUsers },
-  { label: "Settings", icon: FaCog },
+  {
+    label: "Settings",
+    icon: FaCog,
+    hasDropdown: true,
+    dropdownItems: [
+      { label: "Test 3" },
+      { label: "Test 4" },
+    ],
+  },
 ];
 
-export default function page() {
-
-  const [show,setShow] = useState(false)
-
-  // min-h-screen - minimum height = 100% of the viewport height
+export default function Page() {
+  const [show, setShow] = useState(false);
 
   return (
-    <div className="min-h-screen bg-[#000000] h-40">
-<div className="flex h-screen">
-      {/* Sidebar */}
-      <aside className="w-64 bg-blue-900 text-white flex flex-col">
-        <div className="p-4 font-bold text-xl">Astalty</div>
-        <nav className="flex-1 px-2 space-y-1">
-          {menuItems.map((item, idx) => (
-            <a
-              key={idx}
-              href="#"
-              className="flex items-center space-x-2 px-3 py-2 rounded-md hover:bg-blue-800"
-            >
-              <item.icon className="w-4 h-4" />
-              <span>{item.label}</span>
-            </a>
-          ))}
-        </nav>
-      </aside>
+    <div className="w-auto">
+      <div className="flex">
+        {/* Header */}
+        <div className="text-[#232323] flex justify-between items-center w-screen p-4 shadow-[2px_2px_2px_rgba(0,0,0,0.1)]">
+          <div className="font-bold text-xl">Astalty</div>
 
-      {/* Main Section */}
-      <div className="flex-1 flex flex-col">
-        {/* Topbar */}
-        <header className="h-14 bg-white border-b flex items-center justify-between px-6">
-          <div className="flex items-center space-x-4">
-            <button className="text-sm px-3 py-1 border rounded">Support</button>
-            <button className="text-sm px-3 py-1 border rounded">User Guide</button>
-          </div>
-          <div className="flex items-center space-x-4">
-            <button className="bg-blue-900 text-white px-4 py-1 rounded">
-              + Create Task
-            </button>
-            <div className="relative">
-              <span className="absolute -top-1 -right-2 bg-blue-900 text-white text-xs px-1 rounded-full">
-                17
-              </span>
-              🔔
-            </div>
-            <div className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
-              MR
-            </div>
-          </div>
-        </header>
+          <nav className="flex">
+            {menuItems.map((item, idx) => (
+              <div key={idx}>
+                {item.hasDropdown ? (
+                  <MultiDropdown
+                    key={idx}
+                    dropdownTitle={item.label}
+                    dropdownMenuItems={item.dropdownItems}
+                  />
+                ) : (
+                  <a
+                    key={idx}
+                    href="#"
+                    className="flex items-center space-x-2 px-4 py-2 rounded hover:bg-[#f2f2f2] transition-all ease-linear"
+                  >
+                    <item.icon className="w-4 h-4" />
+                    <span>{item.label}</span>
+                  </a>
+                )}
+              </div>
+            ))}
+          </nav>
 
-        {/* Main Content */}
-        <div className="p-4 bg-gray-100">
-          <p>This is the layout</p>
+          <div className="flex">
+            <UserDropdown />
+          </div>
         </div>
       </div>
-    </div>
     </div>
   );
 }

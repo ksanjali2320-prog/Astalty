@@ -4,7 +4,7 @@ import { FiArrowRight } from "react-icons/fi";
 
 export default function LeftSection() {
   return (
-    <section className="min-h-screen flex items-center bg-[#000000] text-white px-6 py-12">
+    <section className="min-h-screen flex items-center bg-[#000000] text-white px-6 max-w-5xl py-12">
       <div className="max-w-2xl space-y-6" >
         <h1 className="text-5xl font-bold">Good morning</h1>
         <h2 className="text-2xl font-semibold">
