@@ -25,10 +25,48 @@ export default function SignupForm() {
     });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log(formData);
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+  
+  console.log(formData);
+
+  const payload = {
+    businessName: formData.businessName,
+    firstName: formData.firstName,
+    lastName: formData.lastName,
+    mobileNumber: formData.mobile,
+    email: formData.email,
+    password: formData.password,
+    hereAboutUs: formData.hearAbout,
+    sizeOfTeam: formData.teamSize,
+    serviceProvide: formData.services,
+    privacyPolicyStatus: formData.privacy,
+    termsAndConditionsStatus: formData.terms,
   };
+
+  try {
+    const response = await fetch("http://localhost:8000/api/user/create", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      console.log("User created successfully:", data);
+      // reset form or redirect if needed
+    } else {
+      console.error("Error creating user:", data);
+      alert(data.message || "Failed to create user");
+    }
+  } catch (error) {
+    console.error("Network error:", error);
+    alert("Network error, please try again later");
+  }
+};
 
   return (
     <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow p-6 max-w-3xl mx-auto space-y-4">
@@ -175,7 +213,7 @@ export default function SignupForm() {
         type="submit"
         className="w-full bg-[#000000] hover:bg-[#001930] text-white py-3 rounded-md"
       >
-        Start 14-day free trial
+        Start 14-day free trialls
       </button>
 
       <p className="text-center text-sm text-gray-500">
