@@ -21,7 +21,7 @@ app.use(
   })
 );
 
-// ✅ Handle preflight explicitly
+// Handle preflight explicitly
 app.use(bodyParser.json());
 
 const PORT = process.env.PORT || 5000;
@@ -34,9 +34,14 @@ mongoose.connect(MONGO_URL).then(()=> {
   })
 }).catch(err => console.log(err));
 
+/**
+ * below is the users api
+ */
 app.use("/api/user",userRoute)
 
-
+/**
+ * below is the dashboardMenusRoute api
+ */
 app.use("/api",dashboardMenusRoute)
 
 /**

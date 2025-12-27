@@ -12,13 +12,21 @@ const create = async (req, res) => {
     // Check if user with email already exists
     const userEmailExist = await CreateUserModel.findOne({ email });
     if (userEmailExist) {
-      return res.status(400).json({ message: "User email already exists" });
+      return res.status(400).json({
+        statusCode: 1002,
+        message: "User email already exists",
+        data: {},
+      });
     }
 
     // Check if mobile number already exists
     const mobileNumberExist = await CreateUserModel.findOne({ mobileNumber });
     if (mobileNumberExist) {
-      return res.status(400).json({ message: "Mobile number already exists" });
+      return res.status(400).json({
+        statusCode: 1002,
+        message: "Mobile number already exists",
+        data: {},
+      });
     }
 
     // Hash password before saving
@@ -35,7 +43,28 @@ const create = async (req, res) => {
     // Save user to DB
     const savedUser = await createUserData.save();
 
-    return res.status(201).json({ message: "User created successfully", data: savedUser });
+    // 🔐 Generate token (same payload as login)
+    const accessToken = jwt.sign(
+      {
+        user: {
+          firstName: savedUser.firstName,
+          lastName: savedUser.lastName,
+          mobileNumber: savedUser.mobileNumber,
+          email: savedUser.email,
+          id: savedUser._id,
+        },
+      },
+      process.env.ACCESS_TOKEN_SECRET,
+      { expiresIn: "1m" }
+    );
+
+    return res.status(201).json({
+      statusCode: 1000,
+      message: "User created successfully",
+      data: {
+        accessToken,
+      },
+    });
 
   } catch (error) {
     return res.status(400).json({ message: "Validation failed", details: error.message });
