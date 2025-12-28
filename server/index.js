@@ -57,11 +57,9 @@ const modelHearAboutUsList = mongoose.model("HearAboutUsList",aboutUsSchema)
 
 app.get(
   "/api/hear-about-us-list",
-  validateToken,
   async (req, res) => {
     try {
       const result = await modelHearAboutUsList.find();
-
       res.status(200).json({
         statusCode: 1000,
         message: "Hear about us list fetched successfully",
@@ -91,12 +89,20 @@ const modelServiceProvideSchema = mongoose.model("ServiceProvideList",servicePro
 
 app.get("/api/service-provide", async (req, res) => {
   try {
-    const result = await modelServiceProvideSchema.find();
-    res.json(result);
-  } catch (error) {
-    console.error("Error fetching service provide:", error);
-    res.status(500).json({ error: "Internal server error" });
-  }
+      const result = await modelServiceProvideSchema.find();
+      res.status(200).json({
+        statusCode: 1000,
+        message: "service provider list fetched successfully",
+        data: result,
+      });
+    } catch (error) {
+      console.error("Error fetching hear-about-us-list:", error);
+      res.status(500).json({
+        statusCode: 1001,
+        message: "Internal server error",
+        data: {},
+      });
+    }
 });
 
 
@@ -111,14 +117,23 @@ const sizeOfTeamSchema = new Schema({
 
 const modelSizeOfTeam = mongoose.model("SizeOfTeam",sizeOfTeamSchema)
 
-app.get("/api/size-of-team", async (req, res) => {
-  try {
-    const result = await modelSizeOfTeam.find();
-    res.json(result);
-  } catch (error) {
-    console.error("Error fetching size of team:", error);
-    res.status(500).json({ error: "Internal server error" });
-  }
+app.get("/api/size-of-team", 
+  async (req, res) => {
+    try {
+      const result = await modelSizeOfTeam.find();
+      res.status(200).json({
+        statusCode: 1000,
+        message: "team size list fetched successfully",
+        data: result,
+      });
+    } catch (error) {
+      console.error("Error fetching hear-about-us-list:", error);
+      res.status(500).json({
+        statusCode: 1001,
+        message: "Internal server error",
+        data: {},
+      });
+    }
 }); 
 
 app.get("/login", async (req, res) => {

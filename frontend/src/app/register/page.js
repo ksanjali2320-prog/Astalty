@@ -1,29 +1,11 @@
 "use client";
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import Head from "next/head";
 import { Listbox } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { useRouter } from "next/navigation";
-
-const referralOptions = [
-  { label: "Google", value: "google" },
-  { label: "Referral", value: "referral" },
-  { label: "Social Media", value: "social" },
-];
-
-const teamSizeOptions = [
-  { label: "1-5 members", value: "1-5" },
-  { label: "6-10 members", value: "6-10" },
-  { label: "11+ members", value: "11+" },
-];
-
-const serviceOptions = [
-  { label: "Support Coordination", value: "support-coordination" },
-  { label: "Plan Management", value: "plan-management" },
-  { label: "Allied Health", value: "allied-health" },
-];
 
 function SelectDropdown({ label, options, selected, setSelected }) {
   return (
@@ -124,6 +106,86 @@ function MultiSelectDropdown({ label, options, selected, setSelected }) {
 }
 
 export default function SignUpPage() {
+
+  //  HereAboutUsOptions add from here
+  const [hereAboutUsOptions, setHereAboutUsOptions] = useState([]);
+
+  // HowBigYourTeam add from here
+  const[bigTeamSizeOptions,setBigTeamSizeOptions] = useState([]);
+
+  // HowBigYourTeam add from here
+  const[serviceProviderOptions,setServiceProviderOptions] = useState([]);
+
+  useEffect(() => {
+  const fetchServiceProviderOptions = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:8000/api/service-provide"
+      );
+
+      const data = await response.json();
+
+      // ✅ data.data is the array from backend
+      const options = data.data.map((item) => ({
+        label: item.type,   // what user sees
+        value: item._id,    // what backend needs
+      }));
+      setServiceProviderOptions(options);
+    } catch (error) {
+      console.error("Failed to load referral options", error);
+    }
+  };
+
+  fetchServiceProviderOptions();
+}, []);
+
+  useEffect(() => {
+  const fetchBigTeamSizeOptions = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:8000/api/size-of-team"
+      );
+
+      const data = await response.json();
+
+      // ✅ data.data is the array from backend
+      const options = data.data.map((item) => ({
+        label: item.type,   // what user sees
+        value: item._id,    // what backend needs
+      }));
+      setBigTeamSizeOptions(options);
+    } catch (error) {
+      console.error("Failed to load referral options", error);
+    }
+  };
+
+  fetchBigTeamSizeOptions();
+}, []);
+
+
+  useEffect(() => {
+  const fetchHereAboutUsOptions = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:8000/api/hear-about-us-list"
+      );
+
+      const data = await response.json();
+
+      // ✅ data.data is the array from backend
+      const options = data.data.map((item) => ({
+        label: item.type,   // what user sees
+        value: item._id,    // what backend needs
+      }));
+      setHereAboutUsOptions(options);
+    } catch (error) {
+      console.error("Failed to load referral options", error);
+    }
+  };
+
+  fetchHereAboutUsOptions();
+}, []);
+
   // State for form inputs
   const [formData, setFormData] = useState({
     businessName: "",
@@ -258,10 +320,10 @@ export default function SignUpPage() {
 
       try {
         const response = await fetch("http://localhost:8000/api/user/create", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify(payload),
-});
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
 
 
         const data = await response.json();
@@ -280,7 +342,6 @@ export default function SignUpPage() {
         alert("Network error, please try again later");
       }
 
-      // router.push("/login");
     }
   };
 
@@ -882,7 +943,7 @@ export default function SignUpPage() {
                       <div>
                         <SelectDropdown
                           label="How did you hear about us?"
-                          options={referralOptions}
+                          options={hereAboutUsOptions}
                           selected={formData.referralSource}
                           setSelected={(value) =>
                             setFormData((prev) => ({
@@ -903,7 +964,7 @@ export default function SignUpPage() {
                       <div>
                         <SelectDropdown
                           label="How big is your team?"
-                          options={teamSizeOptions}
+                          options={bigTeamSizeOptions}
                           selected={formData.teamSize}
                           setSelected={(value) =>
                             setFormData((prev) => ({
@@ -927,7 +988,7 @@ export default function SignUpPage() {
                     <div>
                       <MultiSelectDropdown
                         label="Which services do you provide?"
-                        options={serviceOptions}
+                        options={serviceProviderOptions}
                         selected={formData.services}
                         setSelected={(value) =>
                           setFormData((prev) => ({
