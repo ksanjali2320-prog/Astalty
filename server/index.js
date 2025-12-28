@@ -8,9 +8,20 @@ const cors = require('cors');
 const bodyParser = require("body-parser");
 require('dotenv').config();
 
-// gaurav
+const validateToken = require("./Middleware/ValidateTokenHandler");
+
 
 const app = express();
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  })
+);
+
+// Handle preflight explicitly
 app.use(bodyParser.json());
 
 const PORT = process.env.PORT || 5000;
@@ -23,9 +34,14 @@ mongoose.connect(MONGO_URL).then(()=> {
   })
 }).catch(err => console.log(err));
 
+/**
+ * below is the users api
+ */
 app.use("/api/user",userRoute)
 
-
+/**
+ * below is the dashboardMenusRoute api
+ */
 app.use("/api",dashboardMenusRoute)
 
 /**
@@ -39,15 +55,26 @@ const aboutUsSchema = new Schema({
 
 const modelHearAboutUsList = mongoose.model("HearAboutUsList",aboutUsSchema)
 
-app.get("/api/hear-about-us-list", async (req, res) => {
-  try {
-    const result = await modelHearAboutUsList.find();
-    res.json(result);
-  } catch (error) {
-    console.error("Error fetching hear-about-us-list:", error);
-    res.status(500).json({ error: "Internal server error" });
+app.get(
+  "/api/hear-about-us-list",
+  async (req, res) => {
+    try {
+      const result = await modelHearAboutUsList.find();
+      res.status(200).json({
+        statusCode: 1000,
+        message: "Hear about us list fetched successfully",
+        data: result,
+      });
+    } catch (error) {
+      console.error("Error fetching hear-about-us-list:", error);
+      res.status(500).json({
+        statusCode: 1001,
+        message: "Internal server error",
+        data: {},
+      });
+    }
   }
-});
+);
 
 /**
  * below is the get service provide list
@@ -62,12 +89,20 @@ const modelServiceProvideSchema = mongoose.model("ServiceProvideList",servicePro
 
 app.get("/api/service-provide", async (req, res) => {
   try {
-    const result = await modelServiceProvideSchema.find();
-    res.json(result);
-  } catch (error) {
-    console.error("Error fetching service provide:", error);
-    res.status(500).json({ error: "Internal server error" });
-  }
+      const result = await modelServiceProvideSchema.find();
+      res.status(200).json({
+        statusCode: 1000,
+        message: "service provider list fetched successfully",
+        data: result,
+      });
+    } catch (error) {
+      console.error("Error fetching hear-about-us-list:", error);
+      res.status(500).json({
+        statusCode: 1001,
+        message: "Internal server error",
+        data: {},
+      });
+    }
 });
 
 
@@ -82,14 +117,23 @@ const sizeOfTeamSchema = new Schema({
 
 const modelSizeOfTeam = mongoose.model("SizeOfTeam",sizeOfTeamSchema)
 
-app.get("/api/size-of-team", async (req, res) => {
-  try {
-    const result = await modelSizeOfTeam.find();
-    res.json(result);
-  } catch (error) {
-    console.error("Error fetching size of team:", error);
-    res.status(500).json({ error: "Internal server error" });
-  }
+app.get("/api/size-of-team", 
+  async (req, res) => {
+    try {
+      const result = await modelSizeOfTeam.find();
+      res.status(200).json({
+        statusCode: 1000,
+        message: "team size list fetched successfully",
+        data: result,
+      });
+    } catch (error) {
+      console.error("Error fetching hear-about-us-list:", error);
+      res.status(500).json({
+        statusCode: 1001,
+        message: "Internal server error",
+        data: {},
+      });
+    }
 }); 
 
 app.get("/login", async (req, res) => {

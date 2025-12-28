@@ -39,17 +39,14 @@ const createUserSchema = new mongoose.Schema({
         minlength:8,
     },
     hereAboutUs:{
-        type:Number,
+        type:String,
         required:true
     },
     sizeOfTeam:{
         type:String,
         required:true
     },
-    serviceProvide:{
-        type:String,
-        required:true
-    },
+    serviceProvide: [{ type: String, required: true }],
     privacyPolicyStatus:{
         type:Boolean,
         required:true

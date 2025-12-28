@@ -1,29 +1,11 @@
 "use client";
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import Head from "next/head";
 import { Listbox } from "@headlessui/react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import { useRouter } from "next/navigation";
-
-const referralOptions = [
-  { label: "Google", value: "google" },
-  { label: "Referral", value: "referral" },
-  { label: "Social Media", value: "social" },
-];
-
-const teamSizeOptions = [
-  { label: "1-5 members", value: "1-5" },
-  { label: "6-10 members", value: "6-10" },
-  { label: "11+ members", value: "11+" },
-];
-
-const serviceOptions = [
-  { label: "Support Coordination", value: "support-coordination" },
-  { label: "Plan Management", value: "plan-management" },
-  { label: "Allied Health", value: "allied-health" },
-];
 
 function SelectDropdown({ label, options, selected, setSelected }) {
   return (
@@ -32,15 +14,13 @@ function SelectDropdown({ label, options, selected, setSelected }) {
         {({ open }) => (
           <>
             <Listbox.Button
-              className={`peer h-10 w-full flex items-center justify-between rounded-md bg-white px-3 text-sm ring-2 ring-inset ${
-                open ? "ring-primary" : "ring-gray-400"
-              }`}
+              className={`peer h-10 w-full flex items-center justify-between rounded-md bg-white px-3 text-sm ring-2 ring-inset ${open ? "ring-primary" : "ring-gray-400"
+                }`}
             >
               <span>{selected?.label || `Select ${label}`}</span>
               <ChevronDownIcon
-                className={`w-5 h-5 transition-transform ${
-                  open ? "rotate-180" : ""
-                }`}
+                className={`w-5 h-5 transition-transform ${open ? "rotate-180" : ""
+                  }`}
               />
             </Listbox.Button>
 
@@ -51,8 +31,7 @@ function SelectDropdown({ label, options, selected, setSelected }) {
                     key={option.value}
                     value={option}
                     className={({ active }) =>
-                      `cursor-pointer select-none px-4 py-2 ${
-                        active ? "bg-gray-100 text-primary" : "text-gray-900"
+                      `cursor-pointer select-none px-4 py-2 ${active ? "bg-gray-100 text-primary" : "text-gray-900"
                       }`
                     }
                   >
@@ -77,9 +56,8 @@ function MultiSelectDropdown({ label, options, selected, setSelected }) {
         {({ open }) => (
           <>
             <Listbox.Button
-              className={`peer h-12 w-full flex items-center justify-between rounded-md bg-white px-3 text-sm ring-2 ring-inset ${
-                open ? "ring-primary" : "ring-gray-400"
-              }`}
+              className={`peer h-12 w-full flex items-center justify-between rounded-md bg-white px-3 text-sm ring-2 ring-inset ${open ? "ring-primary" : "ring-gray-400"
+                }`}
             >
               <span>
                 {selected.length > 0
@@ -87,9 +65,8 @@ function MultiSelectDropdown({ label, options, selected, setSelected }) {
                   : `Select ${label}`}
               </span>
               <ChevronDownIcon
-                className={`w-5 h-5 transition-transform ${
-                  open ? "rotate-180" : ""
-                }`}
+                className={`w-5 h-5 transition-transform ${open ? "rotate-180" : ""
+                  }`}
               />
             </Listbox.Button>
 
@@ -100,8 +77,7 @@ function MultiSelectDropdown({ label, options, selected, setSelected }) {
                     key={option.value}
                     value={option}
                     className={({ active }) =>
-                      `cursor-pointer select-none px-4 py-2 ${
-                        active ? "bg-gray-100 text-primary" : "text-gray-900"
+                      `cursor-pointer select-none px-4 py-2 ${active ? "bg-gray-100 text-primary" : "text-gray-900"
                       }`
                     }
                   >
@@ -130,6 +106,86 @@ function MultiSelectDropdown({ label, options, selected, setSelected }) {
 }
 
 export default function SignUpPage() {
+
+  //  HereAboutUsOptions add from here
+  const [hereAboutUsOptions, setHereAboutUsOptions] = useState([]);
+
+  // HowBigYourTeam add from here
+  const[bigTeamSizeOptions,setBigTeamSizeOptions] = useState([]);
+
+  // HowBigYourTeam add from here
+  const[serviceProviderOptions,setServiceProviderOptions] = useState([]);
+
+  useEffect(() => {
+  const fetchServiceProviderOptions = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:8000/api/service-provide"
+      );
+
+      const data = await response.json();
+
+      // ✅ data.data is the array from backend
+      const options = data.data.map((item) => ({
+        label: item.type,   // what user sees
+        value: item._id,    // what backend needs
+      }));
+      setServiceProviderOptions(options);
+    } catch (error) {
+      console.error("Failed to load referral options", error);
+    }
+  };
+
+  fetchServiceProviderOptions();
+}, []);
+
+  useEffect(() => {
+  const fetchBigTeamSizeOptions = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:8000/api/size-of-team"
+      );
+
+      const data = await response.json();
+
+      // ✅ data.data is the array from backend
+      const options = data.data.map((item) => ({
+        label: item.type,   // what user sees
+        value: item._id,    // what backend needs
+      }));
+      setBigTeamSizeOptions(options);
+    } catch (error) {
+      console.error("Failed to load referral options", error);
+    }
+  };
+
+  fetchBigTeamSizeOptions();
+}, []);
+
+
+  useEffect(() => {
+  const fetchHereAboutUsOptions = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:8000/api/hear-about-us-list"
+      );
+
+      const data = await response.json();
+
+      // ✅ data.data is the array from backend
+      const options = data.data.map((item) => ({
+        label: item.type,   // what user sees
+        value: item._id,    // what backend needs
+      }));
+      setHereAboutUsOptions(options);
+    } catch (error) {
+      console.error("Failed to load referral options", error);
+    }
+  };
+
+  fetchHereAboutUsOptions();
+}, []);
+
   // State for form inputs
   const [formData, setFormData] = useState({
     businessName: "",
@@ -172,14 +228,14 @@ export default function SignUpPage() {
   };
 
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let isValid = true;
     const newErrors = {};
 
     // Basic validation
     if (!formData.businessName) {
-      newErrors.businessName = "Business name is required";
+      newErrors.businessName = "Business name is requiredgrv";
       isValid = false;
     }
     if (!formData.firstName) {
@@ -242,8 +298,50 @@ export default function SignUpPage() {
         referralSource: formData.referralSource?.value,
         teamSize: formData.teamSize?.value,
       });
+
+
+
       // Add your form submission logic here (e.g., API call)
-      router.push("/login");
+      const payload = {
+        businessName: formData.businessName,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        mobileNumber: formData.mobile,
+        email: formData.email,
+        password: formData.password,
+
+        hereAboutUs: formData.referralSource?.value,
+        sizeOfTeam: formData.teamSize?.value,
+        serviceProvide: formData.services.map(s => s.value),
+
+        privacyPolicyStatus: formData.privacyPolicy,
+        termsAndConditionsStatus: formData.termsConditions,
+      };
+
+      try {
+        const response = await fetch("http://localhost:8000/api/user/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+
+        const data = await response.json();
+
+        if (response.ok) {
+          console.log("User created successfully:", data);
+          alert("User created successfully:")
+          router.push("/login");
+          // reset form or redirect if needed
+        } else {
+          console.error("Error creating user:", data);
+          alert(data.message || "Failed to create user");
+        }
+      } catch (error) {
+        console.error("Network error:", error);
+        alert("Network error, please try again later");
+      }
+
     }
   };
 
@@ -586,27 +684,24 @@ export default function SignUpPage() {
                           type="text"
                           value={formData.businessName}
                           onChange={handleInputChange}
-                          className={`peer h-10 block w-full bg-transparent pl-3 text-sm text-gray-900 focus:outline-none rounded-md ring-1 ${
-                            errors.businessName
+                          className={`peer h-10 block w-full bg-transparent pl-3 text-sm text-gray-900 focus:outline-none rounded-md ring-1 ${errors.businessName
                               ? "ring-red-500"
                               : "ring-gray-400"
-                          } ring-inset focus:ring-primary focus:ring-2 focus:ring-inset hover:ring-primary hover:ring-1 hover:ring-inset`}
+                            } ring-inset focus:ring-primary focus:ring-2 focus:ring-inset hover:ring-primary hover:ring-1 hover:ring-inset`}
                         />
                         <label
                           htmlFor="businessName"
-                          className={`pointer-events-none cursor-text absolute left-2 z-10 max-w-[calc(100%-0.75rem)] scale-100 transform overflow-hidden bg-white text-ellipsis whitespace-nowrap duration-150 select-none peer-focus:-top-2 peer-focus:translate-y-0 peer-focus:px-1 peer-focus:text-xs peer-disabled:cursor-default -top-2 translate-y-0 px-1 text-xs ${
-                            errors.businessName
+                          className={`pointer-events-none cursor-text absolute left-2 z-10 max-w-[calc(100%-0.75rem)] scale-100 transform overflow-hidden bg-white text-ellipsis whitespace-nowrap duration-150 select-none peer-focus:-top-2 peer-focus:translate-y-0 peer-focus:px-1 peer-focus:text-xs peer-disabled:cursor-default -top-2 translate-y-0 px-1 text-xs ${errors.businessName
                               ? "text-red-500"
                               : "text-gray-500 peer-focus:text-primary"
-                          }`}
+                            }`}
                         >
                           Business name
                         </label>
                       </div>
                       <div
-                        className={`transition-opacity ${
-                          errors.businessName ? "opacity-100" : "opacity-0"
-                        }`}
+                        className={`transition-opacity ${errors.businessName ? "opacity-100" : "opacity-0"
+                          }`}
                       >
                         <p className="mb-2 h-4 pl-3 text-xs tracking-tight text-red-500">
                           {errors.businessName}
@@ -622,27 +717,24 @@ export default function SignUpPage() {
                             type="text"
                             value={formData.firstName}
                             onChange={handleInputChange}
-                            className={`peer h-10 block w-full bg-transparent pl-3 text-sm text-gray-900 focus:outline-none rounded-md ring-1 ${
-                              errors.firstName
+                            className={`peer h-10 block w-full bg-transparent pl-3 text-sm text-gray-900 focus:outline-none rounded-md ring-1 ${errors.firstName
                                 ? "ring-red-500"
                                 : "ring-gray-400"
-                            } ring-inset focus:ring-primary focus:ring-2 focus:ring-inset hover:ring-primary hover:ring-1 hover:ring-inset`}
+                              } ring-inset focus:ring-primary focus:ring-2 focus:ring-inset hover:ring-primary hover:ring-1 hover:ring-inset`}
                           />
                           <label
                             htmlFor="firstName"
-                            className={`pointer-events-none cursor-text absolute left-2 z-10 max-w-[calc(100%-0.75rem)] scale-100 transform overflow-hidden bg-white text-ellipsis whitespace-nowrap duration-150 select-none peer-focus:-top-2 peer-focus:translate-y-0 peer-focus:px-1 peer-focus:text-xs peer-disabled:cursor-default -top-2 translate-y-0 px-1 text-xs ${
-                              errors.firstName
+                            className={`pointer-events-none cursor-text absolute left-2 z-10 max-w-[calc(100%-0.75rem)] scale-100 transform overflow-hidden bg-white text-ellipsis whitespace-nowrap duration-150 select-none peer-focus:-top-2 peer-focus:translate-y-0 peer-focus:px-1 peer-focus:text-xs peer-disabled:cursor-default -top-2 translate-y-0 px-1 text-xs ${errors.firstName
                                 ? "text-red-500"
                                 : "text-gray-500 peer-focus:text-primary"
-                            }`}
+                              }`}
                           >
                             First name
                           </label>
                         </div>
                         <div
-                          className={`transition-opacity ${
-                            errors.firstName ? "opacity-100" : "opacity-0"
-                          }`}
+                          className={`transition-opacity ${errors.firstName ? "opacity-100" : "opacity-0"
+                            }`}
                         >
                           <p className="mb-2 h-4 pl-3 text-xs tracking-tight text-red-500">
                             {errors.firstName}
@@ -656,25 +748,22 @@ export default function SignUpPage() {
                             type="text"
                             value={formData.lastName}
                             onChange={handleInputChange}
-                            className={`peer h-10 block w-full bg-transparent pl-3 text-sm text-gray-900 focus:outline-none rounded-md ring-1 ${
-                              errors.lastName ? "ring-red-500" : "ring-gray-400"
-                            } ring-inset focus:ring-primary focus:ring-2 focus:ring-inset hover:ring-primary hover:ring-1 hover:ring-inset`}
+                            className={`peer h-10 block w-full bg-transparent pl-3 text-sm text-gray-900 focus:outline-none rounded-md ring-1 ${errors.lastName ? "ring-red-500" : "ring-gray-400"
+                              } ring-inset focus:ring-primary focus:ring-2 focus:ring-inset hover:ring-primary hover:ring-1 hover:ring-inset`}
                           />
                           <label
                             htmlFor="lastName"
-                            className={`pointer-events-none cursor-text absolute left-2 z-10 max-w-[calc(100%-0.75rem)] scale-100 transform overflow-hidden bg-white text-ellipsis whitespace-nowrap duration-150 select-none peer-focus:-top-2 peer-focus:translate-y-0 peer-focus:px-1 peer-focus:text-xs peer-disabled:cursor-default -top-2 translate-y-0 px-1 text-xs ${
-                              errors.lastName
+                            className={`pointer-events-none cursor-text absolute left-2 z-10 max-w-[calc(100%-0.75rem)] scale-100 transform overflow-hidden bg-white text-ellipsis whitespace-nowrap duration-150 select-none peer-focus:-top-2 peer-focus:translate-y-0 peer-focus:px-1 peer-focus:text-xs peer-disabled:cursor-default -top-2 translate-y-0 px-1 text-xs ${errors.lastName
                                 ? "text-red-500"
                                 : "text-gray-500 peer-focus:text-primary"
-                            }`}
+                              }`}
                           >
                             Last name
                           </label>
                         </div>
                         <div
-                          className={`transition-opacity ${
-                            errors.lastName ? "opacity-100" : "opacity-0"
-                          }`}
+                          className={`transition-opacity ${errors.lastName ? "opacity-100" : "opacity-0"
+                            }`}
                         >
                           <p className="mb-2 h-4 pl-3 text-xs tracking-tight text-red-500">
                             {errors.lastName}
@@ -691,25 +780,22 @@ export default function SignUpPage() {
                             type="text"
                             value={formData.mobile}
                             onChange={handleInputChange}
-                            className={`peer h-10 block w-full bg-transparent pl-3 text-sm text-gray-900 focus:outline-none rounded-md ring-1 ${
-                              errors.mobile ? "ring-red-500" : "ring-gray-400"
-                            } ring-inset focus:ring-primary focus:ring-2 focus:ring-inset hover:ring-primary hover:ring-1 hover:ring-inset`}
+                            className={`peer h-10 block w-full bg-transparent pl-3 text-sm text-gray-900 focus:outline-none rounded-md ring-1 ${errors.mobile ? "ring-red-500" : "ring-gray-400"
+                              } ring-inset focus:ring-primary focus:ring-2 focus:ring-inset hover:ring-primary hover:ring-1 hover:ring-inset`}
                           />
                           <label
                             htmlFor="mobile"
-                            className={`pointer-events-none cursor-text absolute left-2 z-10 max-w-[calc(100%-0.75rem)] scale-100 transform overflow-hidden bg-white text-ellipsis whitespace-nowrap duration-150 select-none peer-focus:-top-2 peer-focus:translate-y-0 peer-focus:px-1 peer-focus:text-xs peer-disabled:cursor-default -top-2 translate-y-0 px-1 text-xs ${
-                              errors.mobile
+                            className={`pointer-events-none cursor-text absolute left-2 z-10 max-w-[calc(100%-0.75rem)] scale-100 transform overflow-hidden bg-white text-ellipsis whitespace-nowrap duration-150 select-none peer-focus:-top-2 peer-focus:translate-y-0 peer-focus:px-1 peer-focus:text-xs peer-disabled:cursor-default -top-2 translate-y-0 px-1 text-xs ${errors.mobile
                                 ? "text-red-500"
                                 : "text-gray-500 peer-focus:text-primary"
-                            }`}
+                              }`}
                           >
                             Mobile
                           </label>
                         </div>
                         <div
-                          className={`transition-opacity ${
-                            errors.mobile ? "opacity-100" : "opacity-0"
-                          }`}
+                          className={`transition-opacity ${errors.mobile ? "opacity-100" : "opacity-0"
+                            }`}
                         >
                           <p className="mb-2 h-4 pl-3 text-xs tracking-tight text-red-500">
                             {errors.mobile}
@@ -723,25 +809,22 @@ export default function SignUpPage() {
                             type="email"
                             value={formData.email}
                             onChange={handleInputChange}
-                            className={`peer h-10 block w-full bg-transparent pl-3 text-sm text-gray-900 focus:outline-none rounded-md ring-1 ${
-                              errors.email ? "ring-red-500" : "ring-gray-400"
-                            } ring-inset focus:ring-primary focus:ring-2 focus:ring-inset hover:ring-primary hover:ring-1 hover:ring-inset`}
+                            className={`peer h-10 block w-full bg-transparent pl-3 text-sm text-gray-900 focus:outline-none rounded-md ring-1 ${errors.email ? "ring-red-500" : "ring-gray-400"
+                              } ring-inset focus:ring-primary focus:ring-2 focus:ring-inset hover:ring-primary hover:ring-1 hover:ring-inset`}
                           />
                           <label
                             htmlFor="email"
-                            className={`pointer-events-none cursor-text absolute left-2 z-10 max-w-[calc(100%-0.75rem)] scale-100 transform overflow-hidden bg-white text-ellipsis whitespace-nowrap duration-150 select-none peer-focus:-top-2 peer-focus:translate-y-0 peer-focus:px-1 peer-focus:text-xs peer-disabled:cursor-default -top-2 translate-y-0 px-1 text-xs ${
-                              errors.email
+                            className={`pointer-events-none cursor-text absolute left-2 z-10 max-w-[calc(100%-0.75rem)] scale-100 transform overflow-hidden bg-white text-ellipsis whitespace-nowrap duration-150 select-none peer-focus:-top-2 peer-focus:translate-y-0 peer-focus:px-1 peer-focus:text-xs peer-disabled:cursor-default -top-2 translate-y-0 px-1 text-xs ${errors.email
                                 ? "text-red-500"
                                 : "text-gray-500 peer-focus:text-primary"
-                            }`}
+                              }`}
                           >
                             Email
                           </label>
                         </div>
                         <div
-                          className={`transition-opacity ${
-                            errors.email ? "opacity-100" : "opacity-0"
-                          }`}
+                          className={`transition-opacity ${errors.email ? "opacity-100" : "opacity-0"
+                            }`}
                         >
                           <p className="mb-2 h-4 pl-3 text-xs tracking-tight text-red-500">
                             {errors.email}
@@ -757,34 +840,30 @@ export default function SignUpPage() {
                           type="password"
                           value={formData.password}
                           onChange={handleInputChange}
-                          className={`peer h-10 block w-full bg-transparent pl-3 text-sm text-gray-900 focus:outline-none rounded-md ring-1 ${
-                            errors.password ? "ring-red-500" : "ring-gray-400"
-                          } ring-inset focus:ring-primary focus:ring-2 focus:ring-inset hover:ring-primary hover:ring-1 hover:ring-inset`}
+                          className={`peer h-10 block w-full bg-transparent pl-3 text-sm text-gray-900 focus:outline-none rounded-md ring-1 ${errors.password ? "ring-red-500" : "ring-gray-400"
+                            } ring-inset focus:ring-primary focus:ring-2 focus:ring-inset hover:ring-primary hover:ring-1 hover:ring-inset`}
                         />
                         <label
                           htmlFor="password"
-                          className={`pointer-events-none cursor-text absolute left-2 z-10 max-w-[calc(100%-0.75rem)] scale-100 transform overflow-hidden bg-white text-ellipsis whitespace-nowrap duration-150 select-none peer-focus:-top-2 peer-focus:translate-y-0 peer-focus:px-1 peer-focus:text-xs peer-disabled:cursor-default -top-2 translate-y-0 px-1 text-xs ${
-                            errors.password
+                          className={`pointer-events-none cursor-text absolute left-2 z-10 max-w-[calc(100%-0.75rem)] scale-100 transform overflow-hidden bg-white text-ellipsis whitespace-nowrap duration-150 select-none peer-focus:-top-2 peer-focus:translate-y-0 peer-focus:px-1 peer-focus:text-xs peer-disabled:cursor-default -top-2 translate-y-0 px-1 text-xs ${errors.password
                               ? "text-red-500"
                               : "text-gray-500 peer-focus:text-primary"
-                          }`}
+                            }`}
                         >
                           Password
                         </label>
                       </div>
                       <div
-                        className={`transition-opacity ${
-                          errors.password ? "opacity-100" : "opacity-0"
-                        }`}
+                        className={`transition-opacity ${errors.password ? "opacity-100" : "opacity-0"
+                          }`}
                       >
                         <p className="mb-2 h-4 pl-3 text-xs tracking-tight text-red-500">
                           {errors.password}
                         </p>
                       </div>
                       <div
-                        className={`shadow-menu absolute bottom-full z-50 mb-4 w-full rounded-lg border bg-white p-2 transition-opacity ${
-                          formData.password ? "block" : "hidden"
-                        }`}
+                        className={`shadow-menu absolute bottom-full z-50 mb-4 w-full rounded-lg border bg-white p-2 transition-opacity ${formData.password ? "block" : "hidden"
+                          }`}
                       >
                         <div className="text-sm">
                           <div className="flex items-center gap-2">
@@ -798,11 +877,10 @@ export default function SignUpPage() {
                               strokeWidth="2"
                               strokeLinecap="round"
                               strokeLinejoin="round"
-                              className={`lucide h-4 w-4 ${
-                                formData.password.length >= 8
+                              className={`lucide h-4 w-4 ${formData.password.length >= 8
                                   ? "text-green-500"
                                   : "text-red-500"
-                              }`}
+                                }`}
                             >
                               <path d="M18 6 6 18"></path>
                               <path d="m6 6 12 12"></path>
@@ -820,13 +898,12 @@ export default function SignUpPage() {
                               strokeWidth="2"
                               strokeLinecap="round"
                               strokeLinejoin="round"
-                              className={`lucide h-4 w-4 ${
-                                /^(?=.*[a-z])(?=.*[A-Z])/.test(
-                                  formData.password
-                                )
+                              className={`lucide h-4 w-4 ${/^(?=.*[a-z])(?=.*[A-Z])/.test(
+                                formData.password
+                              )
                                   ? "text-green-500"
                                   : "text-red-500"
-                              }`}
+                                }`}
                             >
                               <path d="M18 6 6 18"></path>
                               <path d="m6 6 12 12"></path>
@@ -844,11 +921,10 @@ export default function SignUpPage() {
                               strokeWidth="2"
                               strokeLinecap="round"
                               strokeLinejoin="round"
-                              className={`lucide h-4 w-4 ${
-                                /^(?=.*[\d@$!%*?&])/.test(formData.password)
+                              className={`lucide h-4 w-4 ${/^(?=.*[\d@$!%*?&])/.test(formData.password)
                                   ? "text-green-500"
                                   : "text-red-500"
-                              }`}
+                                }`}
                             >
                               <path d="M18 6 6 18"></path>
                               <path d="m6 6 12 12"></path>
@@ -867,7 +943,7 @@ export default function SignUpPage() {
                       <div>
                         <SelectDropdown
                           label="How did you hear about us?"
-                          options={referralOptions}
+                          options={hereAboutUsOptions}
                           selected={formData.referralSource}
                           setSelected={(value) =>
                             setFormData((prev) => ({
@@ -877,9 +953,8 @@ export default function SignUpPage() {
                           }
                         />
                         <div
-                          className={`transition-opacity ${
-                            errors.referralSource ? "opacity-100" : "opacity-0"
-                          }`}
+                          className={`transition-opacity ${errors.referralSource ? "opacity-100" : "opacity-0"
+                            }`}
                         >
                           <p className="mb-2 h-4 pl-3 text-xs tracking-tight text-red-500">
                             {errors.referralSource}
@@ -889,7 +964,7 @@ export default function SignUpPage() {
                       <div>
                         <SelectDropdown
                           label="How big is your team?"
-                          options={teamSizeOptions}
+                          options={bigTeamSizeOptions}
                           selected={formData.teamSize}
                           setSelected={(value) =>
                             setFormData((prev) => ({
@@ -899,9 +974,8 @@ export default function SignUpPage() {
                           }
                         />
                         <div
-                          className={`transition-opacity ${
-                            errors.teamSize ? "opacity-100" : "opacity-0"
-                          }`}
+                          className={`transition-opacity ${errors.teamSize ? "opacity-100" : "opacity-0"
+                            }`}
                         >
                           <p className="mb-2 h-4 pl-3 text-xs tracking-tight text-red-500">
                             {errors.teamSize}
@@ -914,7 +988,7 @@ export default function SignUpPage() {
                     <div>
                       <MultiSelectDropdown
                         label="Which services do you provide?"
-                        options={serviceOptions}
+                        options={serviceProviderOptions}
                         selected={formData.services}
                         setSelected={(value) =>
                           setFormData((prev) => ({
@@ -924,9 +998,8 @@ export default function SignUpPage() {
                         }
                       />
                       <div
-                        className={`transition-opacity ${
-                          errors.services ? "opacity-100" : "opacity-0"
-                        }`}
+                        className={`transition-opacity ${errors.services ? "opacity-100" : "opacity-0"
+                          }`}
                       >
                         <p className="mb-2 h-4 pl-3 text-xs tracking-tight text-red-500">
                           {errors.services}
@@ -963,9 +1036,8 @@ export default function SignUpPage() {
                         </div>
                       </div>
                       <div
-                        className={`transition-opacity ${
-                          errors.privacyPolicy ? "opacity-100" : "opacity-0"
-                        }`}
+                        className={`transition-opacity ${errors.privacyPolicy ? "opacity-100" : "opacity-0"
+                          }`}
                       >
                         <p className="mb-2 h-4 pl-3 text-xs tracking-tight text-red-500">
                           {errors.privacyPolicy}
@@ -1001,9 +1073,8 @@ export default function SignUpPage() {
                         </div>
                       </div>
                       <div
-                        className={`transition-opacity ${
-                          errors.termsConditions ? "opacity-100" : "opacity-0"
-                        }`}
+                        className={`transition-opacity ${errors.termsConditions ? "opacity-100" : "opacity-0"
+                          }`}
                       >
                         <p className="mb-2 h-4 pl-3 text-xs tracking-tight text-red-500">
                           {errors.termsConditions}
