@@ -23,7 +23,7 @@ export default function LoginPage() {
     return passwordRegex.test(password);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let isValid = true;
 
@@ -52,9 +52,36 @@ export default function LoginPage() {
     }
 
     if (isValid) {
-      console.log("Login submitted:", { email, password });
-      // Add your login logic here
+      // console.log("Login submitted:", { email, password });
+      // // Add your login logic here
+      // router.push("/dashboard");
+
+      try {
+    const response = await fetch("http://localhost:8000/api/user/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      // ✅ Save token
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+
+      // ✅ Redirect
       router.push("/dashboard");
+    } else {
+      alert(data.message || "Invalid email or password");
+    }
+  } catch (error) {
+    console.error("Login error:", error);
+    alert("Something went wrong. Please try again.");
+  }
+
     }
   };
 
